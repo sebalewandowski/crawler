@@ -7,4 +7,6 @@
 /public/bundles/
 /var/
 /vendor/
+/docker/nginx
+/.idea
 ###< symfony/framework-bundle ###
