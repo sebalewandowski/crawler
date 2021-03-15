@@ -3,6 +3,7 @@
 namespace App\Command;
 
 use App\Entity\Job;
+use App\Services\CsvReportGenerator;
 use App\Services\JobDetailsDetector;
 use App\Services\JobDetailsCrawler;
 use App\Services\JobsCrawler;
@@ -27,6 +28,10 @@ class SpotifyScraperCommand extends Command
      * @var JobDetailsDetector
      */
     private JobDetailsDetector $jobDetailGuesser;
+    /**
+     * @var CsvReportGenerator
+     */
+    private CsvReportGenerator $csvReportGenerator;
 
     /**
      * SpotifyScraperCommand constructor.
@@ -34,12 +39,19 @@ class SpotifyScraperCommand extends Command
      * @param JobsCrawler $jobCollector
      * @param JobDetailsCrawler $jobScraper
      * @param JobDetailsDetector $jobDetailGuesser
+     * @param CsvReportGenerator $csvReportGenerator
      */
-    public function __construct(JobsCrawler $jobCollector, JobDetailsCrawler $jobScraper, JobDetailsDetector $jobDetailGuesser)
+    public function __construct(
+        JobsCrawler $jobCollector,
+        JobDetailsCrawler $jobScraper,
+        JobDetailsDetector $jobDetailGuesser,
+        CsvReportGenerator $csvReportGenerator
+    )
     {
         $this->jobCollector = $jobCollector;
         $this->jobScraper = $jobScraper;
         $this->jobDetailGuesser = $jobDetailGuesser;
+        $this->csvReportGenerator = $csvReportGenerator;
 
         parent::__construct();
     }
@@ -59,6 +71,7 @@ class SpotifyScraperCommand extends Command
     {
         $jobs = $this->getJobs($output);
         $this->crawlJobDetails($jobs, $output);
+        $this->saveResultsToCsv($jobs, $output);
 
         return Command::SUCCESS;
     }
@@ -87,7 +100,7 @@ class SpotifyScraperCommand extends Command
      * @param array $jobs
      * @param OutputInterface $output
      */
-    private function crawlJobDetails(array $jobs, OutputInterface $output)
+    private function crawlJobDetails(array $jobs, OutputInterface $output): int
     {
         $section = $output->section();
         $progress = new ProgressBar($section);
@@ -107,5 +120,19 @@ class SpotifyScraperCommand extends Command
         $output->writeln('<info>Done!</info>');
 
         return Command::SUCCESS;
+    }
+
+    private function saveResultsToCsv(array $jobs, OutputInterface $output)
+    {
+        $section = $output->section();
+        $progress = new ProgressBar($section);
+        $progress->setFormat('<comment>Generating CSV...</comment> [%bar%] %percent%%');
+        $progress->start(100);
+
+        $this->csvReportGenerator->process($jobs);
+
+        $progress->finish();
+        $output->writeln('');
+        $output->writeln('<info>Done! New file with results created: </info>');
     }
 }
