@@ -13,15 +13,18 @@ class JobsCrawler
      * @var HttpClientInterface
      */
     private $httpClient;
+    private $url;
 
     /**
      * JobsCrawler constructor.
      *
      * @param HttpClientInterface $httpClient
      */
-    public function __construct(HttpClientInterface $httpClient)
+    public function __construct(HttpClientInterface $httpClient, $url)
     {
+
         $this->httpClient = $httpClient;
+        $this->url = $url;
     }
 
     /**
@@ -68,7 +71,7 @@ class JobsCrawler
         while ($found === $perPage) {
             $response = $this->httpClient->request(
                 'GET',
-                'https://api-dot-new-spotifyjobs-com.nw.r.appspot.com/wp-json/animal/v1/job/search?q=&l=stockholm&c=&j=');
+                $this->url);
             $responseArray = $response->toArray()['result'];
             $found = count($responseArray);
             $pageNr++;

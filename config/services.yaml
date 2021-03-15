@@ -29,3 +29,12 @@ services:
 
     # add more service definitions when explicit configuration is needed
     # please note that last definitions always *replace* previous ones
+
+    app.service.job_crawler:
+        class: App\Services\JobsCrawler
+        arguments:
+            - '@http_client'
+            - '%env(resolve:SPOTIFY_URL)%'
+
+    App\Services\JobsCrawler:
+        alias: app.service.job_crawler
