@@ -19,8 +19,7 @@ class CsvReportGenerator
 
     public function process(array $jobs): void
     {
-        $fileName = sprintf($this->reportPath.'/jobs%s.csv', date('Ymdhis'));
-        $writer = Writer::createFromPath($fileName, 'w+');
+        $writer = Writer::createFromPath($this->reportPath.'/jobs.csv', 'w+');
         $writer->insertOne(['Title', 'URL', 'Description', 'Level', 'Years of experience']);
 
         /** @var Job $job */

@@ -4,24 +4,27 @@ namespace App\Tests;
 
 use App\Entity\Job;
 use App\Services\CsvReportGenerator;
+use PHPUnit\Framework\TestCase;
 
-class CsvReportGeneratorTest
+
+class CsvReportGeneratorTest extends TestCase
 {
+    const REPORT_PATH = '/app';
+
     /**
      * @var CsvReportGenerator
      */
     private $generator;
 
-    public function setUp()
-    {
-        $this->generator = new CsvReportGenerator();
-
-        $this->prepareReportDir();
-        $this->removeOldReport();
-    }
+//    public function setUp()
+//    {
+//        $this->prepareReportDir();
+//        $this->removeOldReport();
+//    }
 
     public function test_it_should_generate_csv_report()
     {
+        $this->generator = new CsvReportGenerator(self::REPORT_PATH);
         $jobOffers = $this->prepareData();
 
         $this->generator->process($jobOffers);
@@ -29,50 +32,31 @@ class CsvReportGeneratorTest
         $this->assertReportContentEquals($this->getExpectedReport());
     }
 
-    private function prepareReportDir()
-    {
-        if (!file_exists(self::REPORT_PATH)) {
-            mkdir(self::REPORT_PATH, 0777);
-        }
-    }
-
-    private function removeOldReport()
-    {
-        @unlink(self::REPORT_PATH.'report.csv');
-    }
-
     private function prepareData()
     {
-        $item1 = new Job(
-            '__URL_1__',
-            '__HEADLINE_1__',
-            ['students'],
-            true,
-            '__DESCRIPTION_1__',
-            null
-        );
+        $item1 = new Job();
+        $item1->setTitle('testTitle');
+        $item1->setLevel('testSenior');
+        $item1->setCategory('testCategory');
+        $item1->setDescription('testDescription');
+        $item1->setRequirements('testRequirments');
+        $item1->setYearsOfExperience(3);
+        $item1->setUrl('testUrl');
 
-        $item2 = new Job(
-            '__URL_2__',
-            '__HEADLINE_2__',
-            ['other-category'],
-            false,
-            '__DESCRIPTION_2__',
-            2
-        );
-
-        return [
-            $item1,
-            $item2
-        ];
+        return [$item1];
     }
 
     private function getExpectedReport(): string
     {
-        return <<<EOT
-__URL_1__,__HEADLINE_1__,__DESCRIPTION_1__,true,n/a
-__URL_2__,__HEADLINE_2__,__DESCRIPTION_2__,false,2
-EOT;
+        return
+            'Title,URL,Description,Level,"Years of experience"
+testTitle,testUrl,testDescription,testSenior,3
+';
     }
 
+    private function assertReportContentEquals($expectedContent)
+    {
+        $content = @file_get_contents(self::REPORT_PATH . '/jobs.csv');
+        $this->assertEquals($expectedContent, $content);
+    }
 }
