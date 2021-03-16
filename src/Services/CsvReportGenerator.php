@@ -7,13 +7,19 @@ use League\Csv\Writer;
 
 class CsvReportGenerator
 {
-    public function __construct()
+    /**
+     * @var string
+     */
+    private $reportPath;
+
+    public function __construct(string $reportPath)
     {
+        $this->reportPath = $reportPath;
     }
 
     public function process(array $jobs): void
     {
-        $fileName = sprintf('jobs%s.csv', date('Ymdhis'));
+        $fileName = sprintf($this->reportPath.'/jobs%s.csv', date('Ymdhis'));
         $writer = Writer::createFromPath($fileName, 'w+');
         $writer->insertOne(['Title', 'URL', 'Description', 'Level', 'Years of experience']);
 

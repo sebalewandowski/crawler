@@ -38,3 +38,11 @@ services:
 
     App\Services\JobsCrawler:
         alias: app.service.job_crawler
+
+    app.service.csv_generator:
+        class: App\Services\CsvReportGenerator
+        arguments:
+            - '%env(resolve:SAVE_PATH)%'
+
+    App\Services\CsvReportGenerator:
+        alias: app.service.csv_generator
