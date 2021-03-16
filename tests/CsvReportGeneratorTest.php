@@ -16,12 +16,6 @@ class CsvReportGeneratorTest extends TestCase
      */
     private $generator;
 
-//    public function setUp()
-//    {
-//        $this->prepareReportDir();
-//        $this->removeOldReport();
-//    }
-
     public function test_it_should_generate_csv_report()
     {
         $this->generator = new CsvReportGenerator(self::REPORT_PATH);
@@ -50,8 +44,7 @@ class CsvReportGeneratorTest extends TestCase
     {
         return
             'Title,URL,Description,Level,"Years of experience"
-testTitle,testUrl,testDescription,testSenior,3
-';
+            testTitle,testUrl,testDescription,testSenior,3';
     }
 
     private function assertReportContentEquals($expectedContent)
