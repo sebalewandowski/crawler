@@ -27,3 +27,5 @@ RUN php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');" &&
     chmod +x /usr/local/bin/composer
 
 WORKDIR /app
+
+CMD ["php", "bin/console", "run:spotify"]
