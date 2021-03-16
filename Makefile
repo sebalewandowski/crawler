@@ -19,3 +19,6 @@ build:
 
 tests:
 	docker-compose exec php php vendor/bin/simple-phpunit
+
+run_cmd:
+	docker-compose exec php php bin/console run:spotify

@@ -3,6 +3,7 @@
 ### Project setup
 
 * Run `make init` to initialize project
+* If no csv file will be created Run: run_cmd 
 
 ### Run tests
 
