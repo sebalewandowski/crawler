@@ -28,4 +28,4 @@ RUN php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');" &&
 
 WORKDIR /app
 
-CMD ["php", "bin/console", "run:spotify"]
+CMD ["php", "run:spotify"]
